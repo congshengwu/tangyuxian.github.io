@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+  
+  <title>微信小程序-使用mixin混入 - 糖羽仙</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="这是一个个人小网站">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  
+  
+
+  <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
+  <meta name="description" content="本文用于实现微信小程序的mixin使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信小程序-使用mixin混入">
+<meta property="og:url" content="https://tangyuxian.github.io/2021/02/20/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5/index.html">
+<meta property="og:site_name" content="糖羽仙">
+<meta property="og:description" content="本文用于实现微信小程序的mixin使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-20T05:17:06.000Z">
+<meta property="article:modified_time" content="2021-02-20T13:03:51.498Z">
+<meta property="article:author" content="tangyuxian">
+<meta property="article:tag" content="微信小程序">
+<meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css?v=233" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css?v=1613826325636">
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="mdui-drawer-body-left">
+  
+  <div id="nexmoe-background">
+    <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/background/background.png)"></div>
+    <div class="mdui-appbar mdui-shadow-0">
+      <div class="mdui-toolbar">
+        <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <a href="/" title="tangyuxian" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/head/head.jpg" alt="tangyuxian"></a>
+       </div>
+    </div>
+  </div>
+  <div id="nexmoe-header">
+      <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="tangyuxian">
+            <img src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/head/head.jpg" alt="tangyuxian" alt="tangyuxian">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>4</div>
+        <div><span>标签</span>2</div>
+        <div><span>分类</span>1</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/friend.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-coffee"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+        <form id="search_form" action_e="https://cn.bing.com/search?q=site:tangyuxian.com" onsubmit="return search();">
+            <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+        </form>
+    </div>
+</div>
+  
+  <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://github.com/tangyuxian/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/前端/">前端</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 20px;">微信小程序</a>
+    </div>
+    
+  </div>
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章归档</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+
+<style>
+.nexmoe-widget .archive-list-count{
+	position : absolute;
+	right: 15px;
+	top:9px;
+	color: #DDD;
+}
+</style>
+
+  
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2021 tangyuxian
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/tangyuxian/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        
+    </div>
+</div><!-- .nexmoe-drawer -->
+
+  </div>
+  <div id="nexmoe-content">
+    <div class="nexmoe-primary">
+        <div class="nexmoe-post">
+  
+      <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;"> 
+          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/wechat_applet.jpg" data-sizes="auto" alt="微信小程序-使用mixin混入" class="lazyload">
+          <h1>微信小程序-使用mixin混入</h1>
+      </div>
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月20日</a>
+    <a><i class="nexmoefont icon-areachart"></i>741 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+</div>
+
+  <div class="nexmoe-post-right">
+    
+  </div>
+
+  <article>
+    <p>本文用于实现微信小程序的mixin使用</p>
+<a id="more"></a>
+<h2 id="mixin理解"><a href="#mixin理解" class="headerlink" title="mixin理解"></a>mixin理解</h2><p>本意就是混入的意思,利用语言特性进行组合式操作.</p>
+<p>如果你对<a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/guide/mixins.html">vue中的mixin</a>有所了解,那么对mixin一定不会陌生,如果您使用过java语言,那么它解决<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/897692888725344/923030524000032">多重继承</a> 带来复杂继承链的问题，或者说是<code>多重继承</code>实现的一种技巧.</p>
+<h2 id="微信小程序中的mixin理解"><a href="#微信小程序中的mixin理解" class="headerlink" title="微信小程序中的mixin理解"></a>微信小程序中的mixin理解</h2><p>了解过vue中的混入思路,我们可以将之转化到微信小程序中,可以劫持Page或者Component,改写函数并最终释放出来</p>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><pre><code class="javascript">// 保存原生的 Page 函数
+const originPage = Page
+const originComponent = Component
+Page = (options) =&gt; &#123;
+  const mixins = options.mixins
+  // mixins 必须为数组
+  if (Array.isArray(mixins)) &#123;
+    delete options.mixins
+    // mixins 注入并执行相应逻辑
+    options =  merge(mixins, options)
+  &#125;
+  // 释放原生 Page 函数
+  originPage(options)
+&#125;
+Component = (options) =&gt; &#123;
+  const mixins = options.mixins
+  // mixins 必须为数组
+  if (Array.isArray(mixins)) &#123;
+    delete options.mixins
+    // mixins 注入并执行相应逻辑
+    options = merge(mixins, options)
+  &#125;
+  // 释放原生 Component 函数
+  originComponent(options)
+&#125;
+
+// 定义小程序内置的属性/方法
+const originProperties = [&#39;data&#39;, &#39;properties&#39;, &#39;options&#39;, &#39;methods&#39;,&#39;observers&#39;]
+const originMethods = [&#39;onLoad&#39;, &#39;onReady&#39;, &#39;onShow&#39;, &#39;onHide&#39;, &#39;onUnload&#39;, &#39;onPullDownRefresh&#39;, &#39;onReachBottom&#39;, &#39;onShareAppMessage&#39;, &#39;onPageScroll&#39;, &#39;onTabItemTap&#39;]
+
+function merge(mixins, options) &#123;
+  mixins.forEach((mixin) =&gt; &#123;
+    if (Object.prototype.toString.call(mixin) !== &#39;[object Object]&#39;) &#123;
+      throw new Error(&#39;mixin 类型必须为对象！&#39;)
+    &#125;
+    // 遍历 mixin 里面的所有属性
+    for (let [key, value] of Object.entries(mixin)) &#123;
+      if (originProperties.includes(key)) &#123;
+        // 内置对象属性混入
+        options[key] = &#123;
+          ...value,
+          ...options[key]
+        &#125;
+      &#125; else if (originMethods.includes(key)) &#123;
+        // 内置方法属性混入，优先执行混入的部分
+        const originFunc = options[key]
+        options[key] = function (...args) &#123;
+          value.call(this, ...args)
+          return originFunc &amp;&amp; originFunc.call(this, ...args)
+        &#125;
+      &#125; else &#123;
+        // 自定义方法混入
+        options = &#123;
+          ...mixin,
+          ...options
+        &#125;
+      &#125;
+    &#125;
+  &#125;)
+  return options
+&#125;
+</code></pre>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>可将其命名为mixin.js存入项目的utils或者core中作为工具;</p>
+<p>在<code>app.js</code>顶部引入</p>
+<pre><code class="javascript">//app.js
+import &#39;./utils/mixins.js&#39;
+</code></pre>
+<p>可在项目根目录创建<code>common/mixins</code>文件夹,用于存放各种mixin文件</p>
+<h4 id="Page的mixin定义风格如下"><a href="#Page的mixin定义风格如下" class="headerlink" title="Page的mixin定义风格如下:"></a>Page的mixin定义风格如下:</h4><pre><code class="javascript">//listMixin.js
+module.exports = &#123;
+  data: &#123;
+    list: [],
+    page: 1, //页数
+    limit: 10, //每页最大数
+    lastPage: false, //是否为最后一页
+    isUpload: false, //是否在加载,
+  &#125;,
+   /**
+   * 监听滚动到底部
+   */
+  scrolltolower(e) &#123;
+    console.log(&quot;滚动到底部&quot;, e);
+    if (!this.data.lastPage &amp;&amp; !this.data.isUpload) &#123;
+      this.getList() //由被混入的文件实现getList()函数
+    &#125;;
+  &#125;
+&#125;
+</code></pre>
+<p>使用方法如下:</p>
+<pre><code class="javascript">Page(&#123;
+  mixins: [require(&#39;/common/mixins/ListMixin.js&#39;)]
+&#125;)
+</code></pre>
+<h4 id="Component的mixin定义风格如下"><a href="#Component的mixin定义风格如下" class="headerlink" title="Component的mixin定义风格如下:"></a>Component的mixin定义风格如下:</h4><pre><code class="javascript">//componentListMixin.js
+module.exports = &#123;
+  data: &#123;&#125;,
+  /**
+   * 组件的属性列表
+   */
+  properties: &#123;
+    //数据集合
+    list:&#123;
+      type:Array,
+      value:[]
+    &#125;,
+  &#125;,
+  methods:&#123;
+     /**
+     * 选择某项
+     */
+    chooseItem(event)&#123;
+      let item = event.currentTarget.dataset.cap;
+      this.triggerEvent(&#39;onChoose&#39;, item, &#123;&#125;)
+    &#125;
+  &#125;
+ &#125;
+</code></pre>
+<p>使用方法如下:</p>
+<pre><code class="javascript">Component(&#123;
+  mixins: [require(&#39;/common/mixins/componentListMixin.js&#39;)]
+&#125;)
+</code></pre>
+<p>功能实现参考了<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000019527762">此篇</a>文章,并对存在的问题进行修正</p>
+
+  </article>
+
+  
+    
+  <div class="nexmoe-post-copyright">
+    <strong>本文作者：</strong>tangyuxian<br>
+    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/02/20/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;20&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;20&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5&#x2F;</a><br>
+    
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+    
+  </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" rel="tag">微信小程序</a>
+    
+</div>
+
+  <div class="nexmoe-post-footer">
+    <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '651127b2c415eabb72ca',
+        clientSecret: '874f24a86c051a44699dc969870d76f1dac29318',
+        id: window.location.pathname,
+        repo: 'tangyuxian.github.io',
+        owner: 'tangyuxian',
+        admin: 'tangyuxian'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+  </div>
+</div>
+        <div class="nexmoe-post-right">
+          
+        </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script>
+	hljs.initHighlightingOnLoad();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
+ <script src="/js/app.js?v=1613826325636"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+  
+
+
+
+
+
+</body>
+
+</html>

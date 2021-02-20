@@ -22,11 +22,10 @@
 <meta property="article:author" content="tangyuxian">
 <meta property="article:tag" content="blog ACG">
 <meta name="twitter:card" content="summary">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/gh/tangyuxian/tangyuxian.github.io@main/css/style.css,npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/nexmoe/nexmoe.github.io@latest/lib/mdui_043tiny/css/mdui.css,gh/nexmoe/nexmoe.github.io@latest/lib/iconfont/iconfont.css" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css?v=233" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css">
   
-  <!--<link rel="stylesheet" href="/css/style.css?v=1613660820554">-->
-
-  
+  <link rel="stylesheet" href="/css/style.css?v=1613826325634">
 <meta name="generator" content="Hexo 5.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -50,9 +49,9 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div><span>文章</span>1</div>
-        <div><span>标签</span>1</div>
-        <div><span>分类</span>0</div>
+        <div><span>文章</span>4</div>
+        <div><span>标签</span>2</div>
+        <div><span>分类</span>1</div>
     </div>
     <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
         
@@ -60,6 +59,13 @@
             <i class="mdui-list-item-icon nexmoefont icon-home"></i>
             <div class="mdui-list-item-content">
                 回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/archives" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
             </div>
         </a>
         
@@ -71,7 +77,7 @@
         </a>
         
         <a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/friend.html" title="我的朋友">
-            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <i class="mdui-list-item-icon nexmoefont icon-coffee"></i>
             <div class="mdui-list-item-content">
                 我的朋友
             </div>
@@ -82,14 +88,13 @@
   
   <div class="nexmoe-widget-wrap">
     <div class="nexmoe-widget nexmoe-search">
-        <form id="search_form" action_e="https://cn.bing.com/search?q=site:tangyuxian.github.io" onsubmit="return search();">
+        <form id="search_form" action_e="https://cn.bing.com/search?q=site:tangyuxian.com" onsubmit="return search();">
             <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
         </form>
     </div>
 </div>
   
   <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">社交按钮</h3>
     <div class="nexmoe-widget nexmoe-social">
         <a class="mdui-ripple" href="https://github.com/tangyuxian/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
             <i class="nexmoefont icon-github"></i>
@@ -98,103 +103,191 @@
 </div>
   
   
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/前端/">前端</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
 
   
   
   <div class="nexmoe-widget-wrap">
-    <h3 class="nexmoe-widget-title">标签云</h3>
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/test/" style="font-size: 10px;">test</a>
+      <a href="/tags/vue/" style="font-size: 10px;">vue</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 20px;">微信小程序</a>
     </div>
     
   </div>
+
+  
+  
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章归档</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+
+<style>
+.nexmoe-widget .archive-list-count{
+	position : absolute;
+	right: 15px;
+	top:9px;
+	color: #DDD;
+}
+</style>
 
   
 </aside>
     <div class="nexmoe-copyright">
         &copy; 2021 tangyuxian
         Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-        & <a href="https://nexmoe.com/hexo-theme-nexmoe.html" target="_blank">Nexmoe</a>
+        & <a href="https://github.com/tangyuxian/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        
     </div>
 </div><!-- .nexmoe-drawer -->
+
   </div>
   <div id="nexmoe-content">
     <div class="nexmoe-primary">
-        
-<section class="nexmoe-archives">
-
-    <article>
-        
-
-        
-            <h2>2020</h2>
-            <ul>
+        <section class="nexmoe-posts">
+    
+    <div class="nexmoe-post">
+        <a href="/2021/02/20/vue/vue-%E5%9F%BA%E4%BA%8Evue%E7%9A%84SEO%E6%96%B9%E6%A1%88/">
             
-                <li><span>11-06</span><a href="/2020/11/06/test-my-site/" >test_my_site</a></li>
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/vue.jpg" data-sizes="auto" alt="vue-基于vue的SEO方案" class="lazyload">
+                    <h1>vue-基于vue的SEO方案</h1>
+                </div>
             
-            </ul>
-        
-    </article>
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月20日</a>
+            <a><i class="nexmoefont icon-areachart"></i>2.3k 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 10 分钟</a>
+        </div>
+
+        <article>
+            
+                <p>因vue是spa单页面应用,对seo不友好,所以针对该问题整合了目前网上提到的解决方案以供参考</p>
+            
+        </article>
+    </div>
+    
+    <div class="nexmoe-post">
+        <a href="/2021/02/20/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%B8%B8%E7%94%A8%E5%8E%9F%E7%94%9F%E5%8A%9F%E8%83%BD%E5%B0%81%E8%A3%85/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/wechat_applet.jpg" data-sizes="auto" alt="微信小程序-常用原生功能封装" class="lazyload">
+                    <h1>微信小程序-常用原生功能封装</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月20日</a>
+            <a><i class="nexmoefont icon-areachart"></i>636 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+        </div>
+
+        <article>
+            
+                <p>对微信小程序自身特性的功能进行封装使用</p>
+            
+        </article>
+    </div>
+    
+    <div class="nexmoe-post">
+        <a href="/2021/02/20/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/wechat_applet.jpg" data-sizes="auto" alt="微信小程序-使用mixin混入" class="lazyload">
+                    <h1>微信小程序-使用mixin混入</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月20日</a>
+            <a><i class="nexmoefont icon-areachart"></i>741 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+        </div>
+
+        <article>
+            
+                <p>本文用于实现微信小程序的mixin使用</p>
+            
+        </article>
+    </div>
+    
+    <div class="nexmoe-post">
+        <a href="/2021/02/20/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-Object.entries%20is%20not%20a%20function%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/">
+            
+                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 25%;"> 
+                    <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/wechat_applet.jpg" data-sizes="auto" alt="微信小程序-Object.entries is not a function解决办法" class="lazyload">
+                    <h1>微信小程序-Object.entries is not a function解决办法</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta nexmoe-rainbow">
+            <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月20日</a>
+            <a><i class="nexmoefont icon-areachart"></i>78 字</a>
+            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+        </div>
+
+        <article>
+            
+                <p>在部分机型上打开开发的小程序,vcosole显示<strong>Object.entries is not a function</strong>这类错误,可以使用以下方法手动添加<strong>Object.entries polyfill</strong>解决</p>
+            
+        </article>
+    </div>
+    
 </section>
 
-<style>
-.nexmoe-archives article > *:first-child {
-    margin-top: 0;
-}
-.nexmoe-archives article > *:last-child {
-    margin-bottom: 0;
-}
-.nexmoe-archives ul {
-    list-style: none;
-    padding-left: 0!important;
-}
-.nexmoe-archives li {
-    position: relative;
-    padding: 10px 0;
-}
-.nexmoe-archives li::before {
-    content: "";
-    width: 14px;
-    height: 14px;
-    background: #ff4e6a;
-    display: inline-block;
-    vertical-align: middle;
-    margin-top: -2px;
-    margin-right: 11px;
-    border-radius: 100%;
-    border: 3px solid #fff;
-    z-index: 100;
-    position: relative;
-}
-.nexmoe-archives li::after {
-    content: "";
-    height: 100%;
-    width: 2px;
-    background: rgba(255, 78, 106, 0.2);
-    position: absolute;
-    left: 6px;
-    top: 20px;
-}
-.nexmoe-archives li:last-child:after {
-    display: none;
-}
-.nexmoe-archives span {
-    margin-right: 15px;
-}
-</style>
+        <div class="nexmoe-post-right">
+          
+        </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js,gh/tangyuxian/tangyuxian.github.io@main/js/app.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-<!--<script src="/js/app.js?v=1613660820555"></script>-->
+  <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,gh/highlightjs/cdn-release@9.15.8/build/highlight.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script>
+	hljs.initHighlightingOnLoad();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
 
-    <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
+ <script src="/js/app.js?v=1613826325635"></script>
 
-
- 
-<script> 
-!function(e,t,a){function n(){c(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"),o(),r()}function r(){for(var e=0;e<d.length;e++)d[e].alpha<=0?(t.body.removeChild(d[e].el),d.splice(e,1)):(d[e].y--,d[e].scale+=.004,d[e].alpha-=.013,d[e].el.style.cssText="left:"+d[e].x+"px;top:"+d[e].y+"px;opacity:"+d[e].alpha+";transform:scale("+d[e].scale+","+d[e].scale+") rotate(45deg);background:"+d[e].color+";z-index:99999");requestAnimationFrame(r)}function o(){var t="function"==typeof e.onclick&&e.onclick;e.onclick=function(e){t&&t(),i(e)}}function i(e){var a=t.createElement("div");a.className="heart",d.push({el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:s()}),t.body.appendChild(a)}function c(e){var a=t.createElement("style");a.type="text/css";try{a.appendChild(t.createTextNode(e))}catch(t){a.styleSheet.cssText=e}t.getElementsByTagName("head")[0].appendChild(a)}function s(){return"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}var d=[];e.requestAnimationFrame=function(){return e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,1e3/60)}}(),n()}(window,document);
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
 </script>
 
   
