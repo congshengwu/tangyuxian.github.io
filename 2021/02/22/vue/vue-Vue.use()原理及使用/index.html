@@ -4,7 +4,7 @@
 
 <head>
   
-  <title>微信小程序-使用mixin混入 - 糖羽仙</title>
+  <title>vue-Vue.use()原理及使用 - 糖羽仙</title>
   <meta charset="UTF-8">
   <meta name="description" content="这是一个个人小网站">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -12,22 +12,22 @@
   
 
   <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
-  <meta name="description" content="本文用于实现微信小程序的mixin使用">
+  <meta name="description" content="vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="微信小程序-使用mixin混入">
-<meta property="og:url" content="https://tangyuxian.github.io/2021/02/20/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5/index.html">
+<meta property="og:title" content="vue-Vue.use()原理及使用">
+<meta property="og:url" content="https://tangyuxian.github.io/2021/02/22/vue/vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="糖羽仙">
-<meta property="og:description" content="本文用于实现微信小程序的mixin使用">
+<meta property="og:description" content="vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-20T05:17:06.000Z">
-<meta property="article:modified_time" content="2021-02-20T13:03:51.498Z">
+<meta property="article:published_time" content="2021-02-22T08:11:09.000Z">
+<meta property="article:modified_time" content="2021-02-23T13:06:51.144Z">
 <meta property="article:author" content="tangyuxian">
-<meta property="article:tag" content="微信小程序">
+<meta property="article:tag" content="vue">
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css?v=233" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1614085674079">
+  <link rel="stylesheet" href="/css/style.css?v=1614085674074">
 <meta name="generator" content="Hexo 5.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -174,15 +174,15 @@
         <div class="nexmoe-post">
   
       <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;"> 
-          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/wechat_applet.jpg" data-sizes="auto" alt="微信小程序-使用mixin混入" class="lazyload">
-          <h1>微信小程序-使用mixin混入</h1>
+          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/vue.jpg" data-sizes="auto" alt="vue-Vue.use()原理及使用" class="lazyload">
+          <h1>vue-Vue.use()原理及使用</h1>
       </div>
   
   
   <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月20日</a>
-    <a><i class="nexmoefont icon-areachart"></i>741 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月22日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.1k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
 </div>
 
   <div class="nexmoe-post-right">
@@ -190,134 +190,98 @@
   </div>
 
   <article>
-    <p>本文用于实现微信小程序的mixin使用</p>
+    <p>vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。</p>
 <a id="more"></a>
-<h2 id="mixin理解"><a href="#mixin理解" class="headerlink" title="mixin理解"></a>mixin理解</h2><p>本意就是混入的意思,利用语言特性进行组合式操作.</p>
-<p>如果你对<a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/guide/mixins.html">vue中的mixin</a>有所了解,那么对mixin一定不会陌生,如果您使用过java语言,那么它解决<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/897692888725344/923030524000032">多重继承</a> 带来复杂继承链的问题，或者说是<code>多重继承</code>实现的一种技巧.</p>
-<h2 id="微信小程序中的mixin理解"><a href="#微信小程序中的mixin理解" class="headerlink" title="微信小程序中的mixin理解"></a>微信小程序中的mixin理解</h2><p>了解过vue中的混入思路,我们可以将之转化到微信小程序中,可以劫持Page或者Component,改写函数并最终释放出来</p>
-<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><pre><code class="javascript">// 保存原生的 Page 函数
-const originPage = Page
-const originComponent = Component
-Page = (options) =&gt; &#123;
-  const mixins = options.mixins
-  // mixins 必须为数组
-  if (Array.isArray(mixins)) &#123;
-    delete options.mixins
-    // mixins 注入并执行相应逻辑
-    options =  merge(mixins, options)
+
+<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><h4 id="主要执行流程"><a href="#主要执行流程" class="headerlink" title="主要执行流程"></a>主要执行流程</h4><p>1､检查插件是否注册，若已注册，则直接跳出；</p>
+<p>2､处理入参，将第一个参数之后的参数归集，并在首部塞入 this 上下文；</p>
+<p>3､执行注册方法，调用定义好的 install 方法，传入处理的参数，若没有 install 方法并且插件本身为 function 则直接进行注册；</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><ol>
+<li><p>插件不能重复的加载:install 方法的第一个参数是vue的构造函数，其他参数是Vue.set中除了第一个参数的其他参数； 代码：args.unshift(this)</p>
+</li>
+<li><p>调用插件的install 方法 代码：typeof plugin.install === ‘function’</p>
+</li>
+<li><p>插件本身是一个函数，直接让函数执行。 代码：plugin.apply(null, args)</p>
+</li>
+<li><p>缓存插件。 代码：installedPlugins.push(plugin)</p>
+</li>
+</ol>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><h4 id="源码地址"><a href="#源码地址" class="headerlink" title="源码地址"></a>源码地址</h4><p><a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js">https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js</a></p>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><h6 id="1举例分析"><a href="#1举例分析" class="headerlink" title="1举例分析"></a>1举例分析</h6><p>创建两个文件</p>
+<pre><code class="javascript">// plugins.js
+const Plugin1 = &#123;
+  install(a,b)&#123;
+    console.log(&#39;Plugin1 第一个参数：&#39;,a)
+    console.log(&#39;Plugin1 第二个参数：&#39;,b)
   &#125;
-  // 释放原生 Page 函数
-  originPage(options)
-&#125;
-Component = (options) =&gt; &#123;
-  const mixins = options.mixins
-  // mixins 必须为数组
-  if (Array.isArray(mixins)) &#123;
-    delete options.mixins
-    // mixins 注入并执行相应逻辑
-    options = merge(mixins, options)
-  &#125;
-  // 释放原生 Component 函数
-  originComponent(options)
 &#125;
 
-// 定义小程序内置的属性/方法
-const originProperties = [&#39;data&#39;, &#39;properties&#39;, &#39;options&#39;, &#39;methods&#39;,&#39;observers&#39;]
-const originMethods = [&#39;onLoad&#39;, &#39;onReady&#39;, &#39;onShow&#39;, &#39;onHide&#39;, &#39;onUnload&#39;, &#39;onPullDownRefresh&#39;, &#39;onReachBottom&#39;, &#39;onShareAppMessage&#39;, &#39;onPageScroll&#39;, &#39;onTabItemTap&#39;]
+function Plugin2(a,b)&#123;
+  console.log(&#39;Plugin2 第一个参数：&#39;,a)
+  console.log(&#39;Plugin2 第二个参数：&#39;,b)
+&#125;
 
-function merge(mixins, options) &#123;
-  mixins.forEach((mixin) =&gt; &#123;
-    if (Object.prototype.toString.call(mixin) !== &#39;[object Object]&#39;) &#123;
-      throw new Error(&#39;mixin 类型必须为对象！&#39;)
-    &#125;
-    // 遍历 mixin 里面的所有属性
-    for (let [key, value] of Object.entries(mixin)) &#123;
-      if (originProperties.includes(key)) &#123;
-        // 内置对象属性混入
-        options[key] = &#123;
-          ...value,
-          ...options[key]
-        &#125;
-      &#125; else if (originMethods.includes(key)) &#123;
-        // 内置方法属性混入，优先执行混入的部分
-        const originFunc = options[key]
-        options[key] = function (...args) &#123;
-          value.call(this, ...args)
-          return originFunc &amp;&amp; originFunc.call(this, ...args)
-        &#125;
-      &#125; else &#123;
-        // 自定义方法混入
-        options = &#123;
-          ...mixin,
-          ...options
-        &#125;
-      &#125;
-    &#125;
-  &#125;)
-  return options
+export&#123;Plugin1,Plugin2&#125;
+</code></pre>
+<pre><code class="javascript">// use.js 
+import Vue from &#39;vue&#39;
+import &#123;Plugin1,Plugin2&#125; from &#39;./plugins&#39;
+
+Vue.use(Plugin1,&#39;参数1&#39;)
+Vue.use(Plugin2,&#39;参数A&#39;)
+</code></pre>
+<pre><code class="javascript">// main.js
+import Vue from &#39;vue&#39;
+import App from &#39;./App.vue&#39;
+import router from &#39;./router&#39;
+import &#39;./assets/plugins/use&#39;
+
+Vue.config.productionTip = false
+new Vue(&#123;
+  router,
+  store,
+  render: h =&gt; h(App)
+&#125;).$mount(&#39;#app&#39;)
+</code></pre>
+<p>从中可以发现我们在 plugin1 中的 install 方法编写的两个 console 都打印出来，第一个打印出来的是Vue对象，第二个是我们传入的参数。<br>而 plugin2 没有 install 方法，它本身就是一个方法，也能打印两个参数，第一个是Vue对象，第二个是我们传入的参数。<br>那么现在我们是不是大概对Vue.use有一个模糊的猜想.</p>
+<h6 id="分析源码"><a href="#分析源码" class="headerlink" title="分析源码"></a>分析源码</h6><p><strong>toArray 源码</strong></p>
+<pre><code class="javascript">export function toArray (list: any, start?: number): Array&lt;any&gt; &#123;
+  start = start || 0
+  let i = list.length - start
+  const ret: Array&lt;any&gt; = new Array(i)
+  while (i--) &#123;
+    ret[i] = list[i + start]
+  &#125;
+  return ret
 &#125;
 </code></pre>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>可将其命名为mixin.js存入项目的utils或者core中作为工具;</p>
-<p>在<code>app.js</code>顶部引入</p>
-<pre><code class="javascript">//app.js
-import &#39;./utils/mixins.js&#39;
-</code></pre>
-<p>可在项目根目录创建<code>common/mixins</code>文件夹,用于存放各种mixin文件</p>
-<h4 id="Page的mixin定义风格如下"><a href="#Page的mixin定义风格如下" class="headerlink" title="Page的mixin定义风格如下:"></a>Page的mixin定义风格如下:</h4><pre><code class="javascript">//listMixin.js
-module.exports = &#123;
-  data: &#123;
-    list: [],
-    page: 1, //页数
-    limit: 10, //每页最大数
-    lastPage: false, //是否为最后一页
-    isUpload: false, //是否在加载,
-  &#125;,
-   /**
-   * 监听滚动到底部
-   */
-  scrolltolower(e) &#123;
-    console.log(&quot;滚动到底部&quot;, e);
-    if (!this.data.lastPage &amp;&amp; !this.data.isUpload) &#123;
-      this.getList() //由被混入的文件实现getList()函数
-    &#125;;
+<p><strong>use源码</strong></p>
+<pre><code class="javascript">import &#123; toArray &#125; from &#39;../util/index&#39;
+
+export function initUse (Vue: GlobalAPI) &#123;
+  Vue.use = function (plugin: Function | Object) &#123;
+    const installedPlugins = (this._installedPlugins || (this._installedPlugins = []))
+    if (installedPlugins.indexOf(plugin) &gt; -1) &#123;
+      return this
+    &#125;
+
+    // additional parameters
+    const args = toArray(arguments, 1)
+    args.unshift(this)
+    if (typeof plugin.install === &#39;function&#39;) &#123;
+      plugin.install.apply(plugin, args)
+    &#125; else if (typeof plugin === &#39;function&#39;) &#123;
+      plugin.apply(null, args)
+    &#125;
+    installedPlugins.push(plugin)
+    return this
   &#125;
 &#125;
 </code></pre>
-<p>使用方法如下:</p>
-<pre><code class="javascript">Page(&#123;
-  mixins: [require(&#39;/common/mixins/ListMixin.js&#39;)]
-&#125;)
-</code></pre>
-<h4 id="Component的mixin定义风格如下"><a href="#Component的mixin定义风格如下" class="headerlink" title="Component的mixin定义风格如下:"></a>Component的mixin定义风格如下:</h4><pre><code class="javascript">//componentListMixin.js
-module.exports = &#123;
-  data: &#123;&#125;,
-  /**
-   * 组件的属性列表
-   */
-  properties: &#123;
-    //数据集合
-    list:&#123;
-      type:Array,
-      value:[]
-    &#125;,
-  &#125;,
-  methods:&#123;
-     /**
-     * 选择某项
-     */
-    chooseItem(event)&#123;
-      let item = event.currentTarget.dataset.cap;
-      this.triggerEvent(&#39;onChoose&#39;, item, &#123;&#125;)
-    &#125;
-  &#125;
- &#125;
-</code></pre>
-<p>使用方法如下:</p>
-<pre><code class="javascript">Component(&#123;
-  mixins: [require(&#39;/common/mixins/componentListMixin.js&#39;)]
-&#125;)
-</code></pre>
-<p>功能实现参考了<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000019527762">此篇</a>文章,并对存在的问题进行修正</p>
+<p>从源码中我们可以发现 vue 首先判断这个插件是否被注册过，不允许重复注册，并且接收的 plugin 参数的限制是 Function | Object 两种类型。<br>对于这两种类型有不同的处理。<br>首先将我们传入的参数整理成数组： const args = toArray(arguments, 1)；<br>再将 Vue 对象添加到这个数组的起始位置 args.unshift(this) ,这里的 this 指向 Vue 对象；<br>如果我们传入的 plugin(Vue.use的第一个参数) 的 install 是一个方法。也就是说如果我们传入一个对象，对象中包含 install 方法，那么我们就调用这个 plugin 的 install 方法并将整理好的数组当成参数传入 install 方法中， plugin.install.apply(plugin, args)；<br>如果我们传入的 plugin 就是一个函数,那么我们就直接调用这个函数并将整理好的数组当成参数传入， plugin.apply(null, args)；<br>之后给这个插件添加至已经添加过的插件数组中，标示已经注册过 installedPlugins.push(plugin)；<br>最后返回 Vue 对象。</p>
+<h6 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h6><p>通过以上分析我们可以知道，在我们以后编写插件的时候可以有两种方式。<br>一种是将这个插件的逻辑封装成一个对象，最后将在 install 编写业务代码暴露给 Vue 对象。这样做的好处是可以添加任意参数在这个对象上方便将 install 函数封装得更加精简，可拓展性也比较高。<br>还有一种则是将所有逻辑都编写成一个函数暴露给 Vue。<br>其实两种方法原理都一样，无非第二种就是将这个插件直接当成 install 函数来处理。<br>个人觉得第一种方式比较合理。</p>
+<hr>
+<p>参考文档:<a target="_blank" rel="noopener" href="https://blog.csdn.net/ZYS10000/article/details/107246076/">csdn上的文章:Vue中 Vue.use() 原理及使用</a></p>
 
   </article>
 
@@ -325,7 +289,7 @@ module.exports = &#123;
     
   <div class="nexmoe-post-copyright">
     <strong>本文作者：</strong>tangyuxian<br>
-    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/02/20/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;20&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;20&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F&#x2F;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E4%BD%BF%E7%94%A8mixin%E6%B7%B7%E5%85%A5&#x2F;</a><br>
+    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/02/22/vue/vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;22&#x2F;vue&#x2F;vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;22&#x2F;vue&#x2F;vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8&#x2F;</a><br>
     
       <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
     
@@ -339,7 +303,7 @@ module.exports = &#123;
         <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a>
     
     
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" rel="tag">微信小程序</a>
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/vue/" rel="tag">vue</a>
     
 </div>
 
@@ -377,7 +341,7 @@ module.exports = &#123;
 
 
 <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
- <script src="/js/app.js?v=1614085674079"></script>
+ <script src="/js/app.js?v=1614085674075"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
 <script>
