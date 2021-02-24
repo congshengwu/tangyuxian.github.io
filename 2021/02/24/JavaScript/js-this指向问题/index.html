@@ -4,7 +4,7 @@
 
 <head>
   
-  <title>vue-Vue.use()原理及使用 - 糖羽仙</title>
+  <title>js-this指向问题 - 糖羽仙</title>
   <meta charset="UTF-8">
   <meta name="description" content="这是一个个人小网站">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -12,22 +12,22 @@
   
 
   <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
-  <meta name="description" content="vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。">
+  <meta name="description" content="function(){} 和 () &#x3D;&gt;{} 中this指向的问题">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vue-Vue.use()原理及使用">
-<meta property="og:url" content="https://tangyuxian.github.io/2021/02/22/vue/vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:title" content="js-this指向问题">
+<meta property="og:url" content="https://tangyuxian.github.io/2021/02/24/JavaScript/js-this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="糖羽仙">
-<meta property="og:description" content="vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。">
+<meta property="og:description" content="function(){} 和 () &#x3D;&gt;{} 中this指向的问题">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-22T08:11:09.000Z">
-<meta property="article:modified_time" content="2021-02-23T13:06:51.144Z">
+<meta property="article:published_time" content="2021-02-24T02:28:38.000Z">
+<meta property="article:modified_time" content="2021-02-24T13:29:31.485Z">
 <meta property="article:author" content="tangyuxian">
-<meta property="article:tag" content="vue">
+<meta property="article:tag" content="JavaScript">
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css?v=233" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1614176537581">
+  <link rel="stylesheet" href="/css/style.css?v=1614176537579">
 <meta name="generator" content="Hexo 5.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -174,15 +174,15 @@
         <div class="nexmoe-post">
   
       <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;"> 
-          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/vue.jpg" data-sizes="auto" alt="vue-Vue.use()原理及使用" class="lazyload">
-          <h1>vue-Vue.use()原理及使用</h1>
+          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/JavaScript.jpg" data-sizes="auto" alt="js-this指向问题" class="lazyload">
+          <h1>js-this指向问题</h1>
       </div>
   
   
   <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月22日</a>
-    <a><i class="nexmoefont icon-areachart"></i>1.1k 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月24日</a>
+    <a><i class="nexmoefont icon-areachart"></i>868 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
 </div>
 
   <div class="nexmoe-post-right">
@@ -190,98 +190,151 @@
   </div>
 
   <article>
-    <p>vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。</p>
+    <p>function(){} 和 () =&gt;{} 中this指向的问题</p>
 <a id="more"></a>
 
-<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><h4 id="主要执行流程"><a href="#主要执行流程" class="headerlink" title="主要执行流程"></a>主要执行流程</h4><p>1､检查插件是否注册，若已注册，则直接跳出；</p>
-<p>2､处理入参，将第一个参数之后的参数归集，并在首部塞入 this 上下文；</p>
-<p>3､执行注册方法，调用定义好的 install 方法，传入处理的参数，若没有 install 方法并且插件本身为 function 则直接进行注册；</p>
-<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><ol>
-<li><p>插件不能重复的加载:install 方法的第一个参数是vue的构造函数，其他参数是Vue.set中除了第一个参数的其他参数； 代码：args.unshift(this)</p>
+<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><h4 id="普通函数中this"><a href="#普通函数中this" class="headerlink" title="普通函数中this"></a>普通函数中this</h4><ol>
+<li><p>this总是代表它的直接调用者(js的this是执行上下文), 例如 obj.func ,那么func中的this就是obj</p>
 </li>
-<li><p>调用插件的install 方法 代码：typeof plugin.install === ‘function’</p>
+<li><p>在默认情况(非严格模式下,未使用 ‘use strict’),没找到直接调用者,则this指的是 window (约定俗成)</p>
 </li>
-<li><p>插件本身是一个函数，直接让函数执行。 代码：plugin.apply(null, args)</p>
+<li><p>在严格模式下,没有直接调用者的函数中的this是 undefined</p>
 </li>
-<li><p>缓存插件。 代码：installedPlugins.push(plugin)</p>
+<li><p>使用call,apply,bind(ES5新增)绑定的,this指的是 绑定的对象</p>
 </li>
 </ol>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><h4 id="源码地址"><a href="#源码地址" class="headerlink" title="源码地址"></a>源码地址</h4><p><a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js">https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js</a></p>
-<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><h6 id="1举例分析"><a href="#1举例分析" class="headerlink" title="1举例分析"></a>1举例分析</h6><p>创建两个文件</p>
-<pre><code class="javascript">// plugins.js
-const Plugin1 = &#123;
-  install(a,b)&#123;
-    console.log(&#39;Plugin1 第一个参数：&#39;,a)
-    console.log(&#39;Plugin1 第二个参数：&#39;,b)
+<p>注意：普通函数中，内层函数不能从外层函数中继承this的值，在内层函数中，this会是window或者undefined，临时变量self用来将外部的this值导入到内部函数中（另外的方式是在内部函数执行.bind(this)）</p>
+<h4 id="es6箭头函数"><a href="#es6箭头函数" class="headerlink" title="es6箭头函数"></a>es6箭头函数</h4><p>箭头函数没有自己的this, 它的this是继承而来; 默认指向在定义它时所处的对象(宿主对象),而不是执行时的对象, 定义它的时候,可能环境是window; 箭头函数可以方便地让我们在 setTimeout ,setInterval中方便的使用this。</p>
+<p>当在函数中使用一个变量的时候,首先在本函数内部查找该变量,如果找不到则找其父级函数,最后直到window,全局变量默认挂载在window对象下</p>
+<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><h4 id="1、普通函数中内层函数"><a href="#1、普通函数中内层函数" class="headerlink" title="1、普通函数中内层函数"></a>1、普通函数中内层函数</h4><pre><code class="js">function fun()&#123;
+    var self = this;
+    setTimeout(function()&#123;
+        console.log(this);// window
+        console.log(self);// &#123;id: 001&#125;
+        console.log(&#39;id: &#39;, self.id);// id:001
+    &#125;,500);
+&#125;
+fun.call(&#123;id:001&#125;);
+</code></pre>
+<h4 id="2、普通函数中内层函数-bind-this"><a href="#2、普通函数中内层函数-bind-this" class="headerlink" title="2、普通函数中内层函数.bind(this)"></a>2、普通函数中内层函数.bind(this)</h4><pre><code class="javascript">function fun()&#123;
+    var self = this;
+    setTimeout(function()&#123;
+        console.log(this); //&#123;id: 1&#125;
+        console.log(self); //&#123;id: 1&#125;
+        console.log(&#39;id: &#39;, self.id); //id: 1
+    &#125;.bind(this),500);
+&#125;
+fun.call(&#123;id:001&#125;);
+</code></pre>
+<h4 id="3、"><a href="#3、" class="headerlink" title="3、"></a>3、</h4><pre><code class="javascript">  function Fun()&#123;
+    console.log(&quot;args:fun:&quot;,arguments); //args:[2,2,3,4]
+    setTimeout(() =&gt;&#123;
+      console.log(&quot;args:()=&gt;&#123;&#125;:&quot;,arguments); //args:[2,2,3,4]
+    &#125;,500);
+    setTimeout(function()&#123;
+      console.log(&quot;args:function()&#123;&#125;&quot;,arguments); //
+    &#125;,500);
+  &#125;
+  new Fun(2,2,3,4)
+</code></pre>
+<h4 id="4、"><a href="#4、" class="headerlink" title="4、"></a>4、</h4><pre><code class="javascript">var obj = &#123;
+   say: function () &#123;
+     setTimeout(() =&gt; &#123;
+       console.log(this)
+     &#125;);
+   &#125;
+ &#125;
+ obj.say(); // obj
+</code></pre>
+<h4 id="5、"><a href="#5、" class="headerlink" title="5、"></a>5、</h4><pre><code class="javascript">var obj = &#123;
+say: function () &#123;
+  var f1 = () =&gt; &#123;
+    console.log(this); // obj
+    setTimeout(() =&gt; &#123;
+      console.log(this); // obj
+    &#125;)
+  &#125;
+  f1();
   &#125;
 &#125;
-
-function Plugin2(a,b)&#123;
-  console.log(&#39;Plugin2 第一个参数：&#39;,a)
-  console.log(&#39;Plugin2 第二个参数：&#39;,b)
-&#125;
-
-export&#123;Plugin1,Plugin2&#125;
+obj.say()
 </code></pre>
-<pre><code class="javascript">// use.js 
-import Vue from &#39;vue&#39;
-import &#123;Plugin1,Plugin2&#125; from &#39;./plugins&#39;
-
-Vue.use(Plugin1,&#39;参数1&#39;)
-Vue.use(Plugin2,&#39;参数A&#39;)
-</code></pre>
-<pre><code class="javascript">// main.js
-import Vue from &#39;vue&#39;
-import App from &#39;./App.vue&#39;
-import router from &#39;./router&#39;
-import &#39;./assets/plugins/use&#39;
-
-Vue.config.productionTip = false
-new Vue(&#123;
-  router,
-  store,
-  render: h =&gt; h(App)
-&#125;).$mount(&#39;#app&#39;)
-</code></pre>
-<p>从中可以发现我们在 plugin1 中的 install 方法编写的两个 console 都打印出来，第一个打印出来的是Vue对象，第二个是我们传入的参数。<br>而 plugin2 没有 install 方法，它本身就是一个方法，也能打印两个参数，第一个是Vue对象，第二个是我们传入的参数。<br>那么现在我们是不是大概对Vue.use有一个模糊的猜想.</p>
-<h6 id="分析源码"><a href="#分析源码" class="headerlink" title="分析源码"></a>分析源码</h6><p><strong>toArray 源码</strong></p>
-<pre><code class="javascript">export function toArray (list: any, start?: number): Array&lt;any&gt; &#123;
-  start = start || 0
-  let i = list.length - start
-  const ret: Array&lt;any&gt; = new Array(i)
-  while (i--) &#123;
-    ret[i] = list[i + start]
+<h4 id="6、"><a href="#6、" class="headerlink" title="6、"></a>6、</h4><pre><code class="javascript">var obj = &#123;
+say: function () &#123;
+  var f1 = function () &#123;
+    console.log(this); // window, f1调用时,没有直接调用者,也就是没有宿主对象,默认是window
+    setTimeout(() =&gt; &#123;
+      console.log(this); // window
+    &#125;)
+  &#125;;
+   var f2 = ()=&gt;&#123;
+      console.log(this); //say f2调用时,this默认指向所处的对象(宿主对象),不是执行对象
+   &#125;;
+    f1();
+    f2();
   &#125;
-  return ret
 &#125;
+obj.say()
 </code></pre>
-<p><strong>use源码</strong></p>
-<pre><code class="javascript">import &#123; toArray &#125; from &#39;../util/index&#39;
-
-export function initUse (Vue: GlobalAPI) &#123;
-  Vue.use = function (plugin: Function | Object) &#123;
-    const installedPlugins = (this._installedPlugins || (this._installedPlugins = []))
-    if (installedPlugins.indexOf(plugin) &gt; -1) &#123;
-      return this
+<h4 id="7、严格模式"><a href="#7、严格模式" class="headerlink" title="7、严格模式"></a>7、严格模式</h4><pre><code class="javascript">var obj = &#123;
+say: function () &#123;
+  &#39;use strict&#39;;
+  var f1 = function () &#123;
+  console.log(this); // undefined
+  setTimeout(() =&gt; &#123;
+    console.log(this); // undefined
+  &#125;)
+  &#125;;
+  f1();
+ &#125;
+&#125;
+obj.say()
+</code></pre>
+<h4 id="8、总结"><a href="#8、总结" class="headerlink" title="8、总结"></a>8、总结</h4><pre><code class="javascript">  var a = &#39;window&#39;;
+  var id = &#39;1&#39;;
+  var obj2 = &#123;
+    id: &#39;2&#39;,
+    a: &#39;obj2&#39;
+  &#125;
+  var obj = &#123;
+    a: &#39;obj&#39;,
+    id: &#39;3&#39;,
+    say1: () =&gt; &#123;
+      console.log(this.a);
+      console.log(this.id);
+    &#125;,
+    say2: function() &#123;
+      var f1 = () =&gt; &#123;
+        console.log(this.a);
+        console.log(this.id);
+      &#125;
+      f1();
+    &#125;,
+    say3: () =&gt; &#123;
+      var f1 = () =&gt; &#123;
+        console.log(this.a);
+        console.log(this.id);
+      &#125;
+      f1();
     &#125;
-
-    // additional parameters
-    const args = toArray(arguments, 1)
-    args.unshift(this)
-    if (typeof plugin.install === &#39;function&#39;) &#123;
-      plugin.install.apply(plugin, args)
-    &#125; else if (typeof plugin === &#39;function&#39;) &#123;
-      plugin.apply(null, args)
-    &#125;
-    installedPlugins.push(plugin)
-    return this
   &#125;
-&#125;
+  console.log(&#39;================================&#39;);
+  obj.say1.call(obj2) //window 1(箭头函数this指向不可被改变)
+  console.log(&#39;================================&#39;);
+  obj.say2.call(obj2)//obj2 2
+  console.log(&#39;================================&#39;);
+  obj.say3.call(obj2)//window 1
+  console.log(&#39;================================&#39;);
+  obj.say1()//window 1
+  console.log(&#39;================================&#39;);
+  obj.say2()//obj 3
+  console.log(&#39;================================&#39;);
+  obj.say3()//window 1
+  console.log(&#39;================================&#39;);
 </code></pre>
-<p>从源码中我们可以发现 vue 首先判断这个插件是否被注册过，不允许重复注册，并且接收的 plugin 参数的限制是 Function | Object 两种类型。<br>对于这两种类型有不同的处理。<br>首先将我们传入的参数整理成数组： const args = toArray(arguments, 1)；<br>再将 Vue 对象添加到这个数组的起始位置 args.unshift(this) ,这里的 this 指向 Vue 对象；<br>如果我们传入的 plugin(Vue.use的第一个参数) 的 install 是一个方法。也就是说如果我们传入一个对象，对象中包含 install 方法，那么我们就调用这个 plugin 的 install 方法并将整理好的数组当成参数传入 install 方法中， plugin.install.apply(plugin, args)；<br>如果我们传入的 plugin 就是一个函数,那么我们就直接调用这个函数并将整理好的数组当成参数传入， plugin.apply(null, args)；<br>之后给这个插件添加至已经添加过的插件数组中，标示已经注册过 installedPlugins.push(plugin)；<br>最后返回 Vue 对象。</p>
-<h6 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h6><p>通过以上分析我们可以知道，在我们以后编写插件的时候可以有两种方式。<br>一种是将这个插件的逻辑封装成一个对象，最后将在 install 编写业务代码暴露给 Vue 对象。这样做的好处是可以添加任意参数在这个对象上方便将 install 函数封装得更加精简，可拓展性也比较高。<br>还有一种则是将所有逻辑都编写成一个函数暴露给 Vue。<br>其实两种方法原理都一样，无非第二种就是将这个插件直接当成 install 函数来处理。<br>个人觉得第一种方式比较合理。</p>
 <hr>
-<p>参考文档:<a target="_blank" rel="noopener" href="https://blog.csdn.net/ZYS10000/article/details/107246076/">csdn上的文章:Vue中 Vue.use() 原理及使用</a></p>
+<p>参考文档:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36356218/article/details/80908021">CSDN文章:function(){} 和 () =&gt;{} 中this指向的问题</a>;</p>
+<p>扩展阅读:<a target="_blank" rel="noopener" href="https://blog.csdn.net/u012719257/article/details/46006671">CSDN文章:使用(function() {}).call(this);包裹代码有什么好处，什么时候应该这样做?</a></p>
 
   </article>
 
@@ -289,7 +342,7 @@ export function initUse (Vue: GlobalAPI) &#123;
     
   <div class="nexmoe-post-copyright">
     <strong>本文作者：</strong>tangyuxian<br>
-    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/02/22/vue/vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;22&#x2F;vue&#x2F;vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;22&#x2F;vue&#x2F;vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8&#x2F;</a><br>
+    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/02/24/JavaScript/js-this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;24&#x2F;JavaScript&#x2F;js-this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;24&#x2F;JavaScript&#x2F;js-this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98&#x2F;</a><br>
     
       <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
     
@@ -303,7 +356,7 @@ export function initUse (Vue: GlobalAPI) &#123;
         <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a>
     
     
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/vue/" rel="tag">vue</a>
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/JavaScript/" rel="tag">JavaScript</a>
     
 </div>
 
@@ -341,7 +394,7 @@ export function initUse (Vue: GlobalAPI) &#123;
 
 
 <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
- <script src="/js/app.js?v=1614176537582"></script>
+ <script src="/js/app.js?v=1614176537580"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
 <script>
