@@ -4,7 +4,7 @@
 
 <head>
   
-  <title>vue-Vue.use()原理及使用 - 糖羽仙</title>
+  <title>vue-生命周期 - 糖羽仙</title>
   <meta charset="UTF-8">
   <meta name="description" content="这是一个个人小网站">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -12,22 +12,22 @@
   
 
   <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
-  <meta name="description" content="vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。">
+  <meta name="description" content="总共分为8个阶段：创建前&#x2F;后，载入前&#x2F;后，更新前&#x2F;后，销毁前&#x2F;后。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vue-Vue.use()原理及使用">
-<meta property="og:url" content="https://tangyuxian.github.io/2021/02/22/vue/vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:title" content="vue-生命周期">
+<meta property="og:url" content="https://tangyuxian.github.io/2021/03/02/vue/vue-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/index.html">
 <meta property="og:site_name" content="糖羽仙">
-<meta property="og:description" content="vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。">
+<meta property="og:description" content="总共分为8个阶段：创建前&#x2F;后，载入前&#x2F;后，更新前&#x2F;后，销毁前&#x2F;后。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-22T08:11:09.000Z">
-<meta property="article:modified_time" content="2021-02-23T13:06:51.144Z">
+<meta property="article:published_time" content="2021-03-02T03:41:42.000Z">
+<meta property="article:modified_time" content="2021-03-02T11:42:31.330Z">
 <meta property="article:author" content="tangyuxian">
 <meta property="article:tag" content="vue">
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css?v=233" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1614690555380">
+  <link rel="stylesheet" href="/css/style.css?v=1614690555373">
 <meta name="generator" content="Hexo 5.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -174,15 +174,15 @@
         <div class="nexmoe-post">
   
       <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;"> 
-          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/vue.jpg" data-sizes="auto" alt="vue-Vue.use()原理及使用" class="lazyload">
-          <h1>vue-Vue.use()原理及使用</h1>
+          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/vue.jpg" data-sizes="auto" alt="vue-生命周期" class="lazyload">
+          <h1>vue-生命周期</h1>
       </div>
   
   
   <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月22日</a>
-    <a><i class="nexmoefont icon-areachart"></i>1.1k 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年03月02日</a>
+    <a><i class="nexmoefont icon-areachart"></i>691 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
 </div>
 
   <div class="nexmoe-post-right">
@@ -190,98 +190,33 @@
   </div>
 
   <article>
-    <p>vue.use 是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等。</p>
+    <p>总共分为8个阶段：创建前/后，载入前/后，更新前/后，销毁前/后。</p>
 <a id="more"></a>
 
-<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><h4 id="主要执行流程"><a href="#主要执行流程" class="headerlink" title="主要执行流程"></a>主要执行流程</h4><p>1､检查插件是否注册，若已注册，则直接跳出；</p>
-<p>2､处理入参，将第一个参数之后的参数归集，并在首部塞入 this 上下文；</p>
-<p>3､执行注册方法，调用定义好的 install 方法，传入处理的参数，若没有 install 方法并且插件本身为 function 则直接进行注册；</p>
-<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><ol>
-<li><p>插件不能重复的加载:install 方法的第一个参数是vue的构造函数，其他参数是Vue.set中除了第一个参数的其他参数； 代码：args.unshift(this)</p>
+<h2 id="分析总结"><a href="#分析总结" class="headerlink" title="分析总结"></a>分析总结</h2><h4 id="1､创建前-后："><a href="#1､创建前-后：" class="headerlink" title="1､创建前/后："></a><strong>1､创建前/后：</strong></h4><h5 id="1-beforeCreate阶段："><a href="#1-beforeCreate阶段：" class="headerlink" title="1) beforeCreate阶段："></a>1) beforeCreate阶段：</h5><p>vue实例的挂载元素el和数据对象data都为undefined，还未初始化。</p>
+<p>说明：在当前阶段data、methods、computed以及watch上的数据和方法都不能被访问。</p>
+<h5 id="2-created阶段："><a href="#2-created阶段：" class="headerlink" title="2) created阶段："></a>2) created阶段：</h5><p>vue实例的数据对象data有了，el还没有。</p>
+<p>说明：可以做一些初始数据的获取，在当前阶段无法与Dom进行交互，如果非要想，可以通过vm.$nextTick来访问Dom。</p>
+<h4 id="2､载入前-后："><a href="#2､载入前-后：" class="headerlink" title="2､载入前/后："></a><strong>2､载入前/后：</strong></h4><h5 id="1-beforeMount阶段："><a href="#1-beforeMount阶段：" class="headerlink" title="1) beforeMount阶段："></a>1) beforeMount阶段：</h5><p>vue实例的$el和data都初始化了，但还是挂载之前为虚拟的dom节点。</p>
+<p>说明：当前阶段虚拟Dom已经创建完成，即将开始渲染。在此时也可以对数据进行更改，不会触发updated。</p>
+<h5 id="2-mounted阶段："><a href="#2-mounted阶段：" class="headerlink" title="2) mounted阶段："></a>2) mounted阶段：</h5><p>vue实例挂载完成，data.message成功渲染。</p>
+<p>说明：在当前阶段，真实的Dom挂载完毕，数据完成双向绑定，可以访问到Dom节点，使用$refs属性对Dom进行操作。</p>
+<h4 id="3､更新前-后："><a href="#3､更新前-后：" class="headerlink" title="3､更新前/后："></a><strong>3､更新前/后</strong>：</h4><h5 id="1-beforeUpdate阶段："><a href="#1-beforeUpdate阶段：" class="headerlink" title="1) beforeUpdate阶段："></a>1) beforeUpdate阶段：</h5><p>响应式数据更新时调用，发生在虚拟DOM打补丁之前，适合在更新之前访问现有的DOM，比如手动移除已添加的事件监听器。</p>
+<p>说明：可以在当前阶段进行更改数据，不会造成重渲染。</p>
+<h5 id="2-updated阶段："><a href="#2-updated阶段：" class="headerlink" title="2) updated阶段："></a>2) updated阶段：</h5><p>虚拟DOM重新渲染和打补丁之后调用，组成新的DOM已经更新，避免在这个钩子函数中操作数据，防止死循环。</p>
+<p>说明：当前阶段组件Dom已完成更新。要注意的是避免在此期间更改数据，因为这可能会导致无限循环的更新。</p>
+<h4 id="4､销毁前-后："><a href="#4､销毁前-后：" class="headerlink" title="4､销毁前/后："></a><strong>4､销毁前/后</strong>：</h4><h5 id="1-beforeDestroy阶段："><a href="#1-beforeDestroy阶段：" class="headerlink" title="1) beforeDestroy阶段："></a>1) beforeDestroy阶段：</h5><p>实例销毁前调用，实例还可以用，this能获取到实例，常用于销毁定时器，解绑事件。</p>
+<p>说明：在当前阶段实例完全可以被使用，我们可以在这时进行善后收尾工作，比如清除计时器。</p>
+<h5 id="2-destroyed阶段："><a href="#2-destroyed阶段：" class="headerlink" title="2) destroyed阶段："></a>2) destroyed阶段：</h5><p>实例销毁后调用，调用后所有事件监听器会被移除，所有的子实例都会被销毁。</p>
+<p>说明：当前阶段组件已被拆解，数据绑定被卸除，监听被移出，子实例也统统被销毁。</p>
+<h4 id="补充回答："><a href="#补充回答：" class="headerlink" title="补充回答："></a>补充回答：</h4><p>第一次页面加载时会触发：beforeCreate, created, beforeMount, mounted。</p>
+<ol>
+<li><p> created 实例已经创建完成，因为它是最早触发的原因可以进行一些数据，资源的请求。(服务器渲染支持created方法)</p>
 </li>
-<li><p>调用插件的install 方法 代码：typeof plugin.install === ‘function’</p>
-</li>
-<li><p>插件本身是一个函数，直接让函数执行。 代码：plugin.apply(null, args)</p>
-</li>
-<li><p>缓存插件。 代码：installedPlugins.push(plugin)</p>
+<li><p> mounted 实例已经挂载完成，可以进行一些DOM操作。(接口请求)</p>
 </li>
 </ol>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><h4 id="源码地址"><a href="#源码地址" class="headerlink" title="源码地址"></a>源码地址</h4><p><a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js">https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js</a></p>
-<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><h6 id="1举例分析"><a href="#1举例分析" class="headerlink" title="1举例分析"></a>1举例分析</h6><p>创建两个文件</p>
-<pre><code class="javascript">// plugins.js
-const Plugin1 = &#123;
-  install(a,b)&#123;
-    console.log(&#39;Plugin1 第一个参数：&#39;,a)
-    console.log(&#39;Plugin1 第二个参数：&#39;,b)
-  &#125;
-&#125;
-
-function Plugin2(a,b)&#123;
-  console.log(&#39;Plugin2 第一个参数：&#39;,a)
-  console.log(&#39;Plugin2 第二个参数：&#39;,b)
-&#125;
-
-export&#123;Plugin1,Plugin2&#125;
-</code></pre>
-<pre><code class="javascript">// use.js 
-import Vue from &#39;vue&#39;
-import &#123;Plugin1,Plugin2&#125; from &#39;./plugins&#39;
-
-Vue.use(Plugin1,&#39;参数1&#39;)
-Vue.use(Plugin2,&#39;参数A&#39;)
-</code></pre>
-<pre><code class="javascript">// main.js
-import Vue from &#39;vue&#39;
-import App from &#39;./App.vue&#39;
-import router from &#39;./router&#39;
-import &#39;./assets/plugins/use&#39;
-
-Vue.config.productionTip = false
-new Vue(&#123;
-  router,
-  store,
-  render: h =&gt; h(App)
-&#125;).$mount(&#39;#app&#39;)
-</code></pre>
-<p>从中可以发现我们在 plugin1 中的 install 方法编写的两个 console 都打印出来，第一个打印出来的是Vue对象，第二个是我们传入的参数。<br>而 plugin2 没有 install 方法，它本身就是一个方法，也能打印两个参数，第一个是Vue对象，第二个是我们传入的参数。<br>那么现在我们是不是大概对Vue.use有一个模糊的猜想.</p>
-<h6 id="分析源码"><a href="#分析源码" class="headerlink" title="分析源码"></a>分析源码</h6><p><strong>toArray 源码</strong></p>
-<pre><code class="javascript">export function toArray (list: any, start?: number): Array&lt;any&gt; &#123;
-  start = start || 0
-  let i = list.length - start
-  const ret: Array&lt;any&gt; = new Array(i)
-  while (i--) &#123;
-    ret[i] = list[i + start]
-  &#125;
-  return ret
-&#125;
-</code></pre>
-<p><strong>use源码</strong></p>
-<pre><code class="javascript">import &#123; toArray &#125; from &#39;../util/index&#39;
-
-export function initUse (Vue: GlobalAPI) &#123;
-  Vue.use = function (plugin: Function | Object) &#123;
-    const installedPlugins = (this._installedPlugins || (this._installedPlugins = []))
-    if (installedPlugins.indexOf(plugin) &gt; -1) &#123;
-      return this
-    &#125;
-
-    // additional parameters
-    const args = toArray(arguments, 1)
-    args.unshift(this)
-    if (typeof plugin.install === &#39;function&#39;) &#123;
-      plugin.install.apply(plugin, args)
-    &#125; else if (typeof plugin === &#39;function&#39;) &#123;
-      plugin.apply(null, args)
-    &#125;
-    installedPlugins.push(plugin)
-    return this
-  &#125;
-&#125;
-</code></pre>
-<p>从源码中我们可以发现 vue 首先判断这个插件是否被注册过，不允许重复注册，并且接收的 plugin 参数的限制是 Function | Object 两种类型。<br>对于这两种类型有不同的处理。<br>首先将我们传入的参数整理成数组： const args = toArray(arguments, 1)；<br>再将 Vue 对象添加到这个数组的起始位置 args.unshift(this) ,这里的 this 指向 Vue 对象；<br>如果我们传入的 plugin(Vue.use的第一个参数) 的 install 是一个方法。也就是说如果我们传入一个对象，对象中包含 install 方法，那么我们就调用这个 plugin 的 install 方法并将整理好的数组当成参数传入 install 方法中， plugin.install.apply(plugin, args)；<br>如果我们传入的 plugin 就是一个函数,那么我们就直接调用这个函数并将整理好的数组当成参数传入， plugin.apply(null, args)；<br>之后给这个插件添加至已经添加过的插件数组中，标示已经注册过 installedPlugins.push(plugin)；<br>最后返回 Vue 对象。</p>
-<h6 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h6><p>通过以上分析我们可以知道，在我们以后编写插件的时候可以有两种方式。<br>一种是将这个插件的逻辑封装成一个对象，最后将在 install 编写业务代码暴露给 Vue 对象。这样做的好处是可以添加任意参数在这个对象上方便将 install 函数封装得更加精简，可拓展性也比较高。<br>还有一种则是将所有逻辑都编写成一个函数暴露给 Vue。<br>其实两种方法原理都一样，无非第二种就是将这个插件直接当成 install 函数来处理。<br>个人觉得第一种方式比较合理。</p>
-<hr>
-<p>参考文档:<a target="_blank" rel="noopener" href="https://blog.csdn.net/ZYS10000/article/details/107246076/">csdn上的文章:Vue中 Vue.use() 原理及使用</a></p>
+<h2 id="源码地址"><a href="#源码地址" class="headerlink" title="源码地址"></a>源码地址</h2><p><a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/blob/dev/src/core/instance/lifecycle.js">https://github.com/vuejs/vue/blob/dev/src/core/instance/lifecycle.js</a></p>
 
   </article>
 
@@ -289,7 +224,7 @@ export function initUse (Vue: GlobalAPI) &#123;
     
   <div class="nexmoe-post-copyright">
     <strong>本文作者：</strong>tangyuxian<br>
-    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/02/22/vue/vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;22&#x2F;vue&#x2F;vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;02&#x2F;22&#x2F;vue&#x2F;vue-Vue.use()%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BD%BF%E7%94%A8&#x2F;</a><br>
+    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/03/02/vue/vue-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;03&#x2F;02&#x2F;vue&#x2F;vue-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;03&#x2F;02&#x2F;vue&#x2F;vue-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&#x2F;</a><br>
     
       <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
     
@@ -341,7 +276,7 @@ export function initUse (Vue: GlobalAPI) &#123;
 
 
 <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
- <script src="/js/app.js?v=1614690555380"></script>
+ <script src="/js/app.js?v=1614690555374"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
 <script>

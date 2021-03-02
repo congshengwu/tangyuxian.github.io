@@ -4,7 +4,7 @@
 
 <head>
   
-  <title>标签：JavaScript - 糖羽仙</title>
+  <title>vue-computed和watch的区别 - 糖羽仙</title>
   <meta charset="UTF-8">
   <meta name="description" content="这是一个个人小网站">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -12,20 +12,22 @@
   
 
   <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
-  <meta name="description" content="这是一个个人小网站">
-<meta property="og:type" content="website">
-<meta property="og:title" content="糖羽仙">
-<meta property="og:url" content="https://tangyuxian.github.io/tags/JavaScript/index.html">
+  <meta name="description" content="computed和watch都是观察页面的数据变化的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue-computed和watch的区别">
+<meta property="og:url" content="https://tangyuxian.github.io/2021/03/02/vue/vue-computed%E5%92%8Cwatch%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
 <meta property="og:site_name" content="糖羽仙">
-<meta property="og:description" content="这是一个个人小网站">
+<meta property="og:description" content="computed和watch都是观察页面的数据变化的。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-02T07:14:51.000Z">
+<meta property="article:modified_time" content="2021-03-02T11:42:31.326Z">
 <meta property="article:author" content="tangyuxian">
-<meta property="article:tag" content="blog ACG">
+<meta property="article:tag" content="vue">
 <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,gh/theme-nexmoe/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css?v=233" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css">
   
-  <link rel="stylesheet" href="/css/style.css?v=1614690555454">
+  <link rel="stylesheet" href="/css/style.css?v=1614690555372">
 <meta name="generator" content="Hexo 5.3.0"></head>
 
 <body class="mdui-drawer-body-left">
@@ -169,79 +171,98 @@
   </div>
   <div id="nexmoe-content">
     <div class="nexmoe-primary">
-        <section class="nexmoe-posts">
+        <div class="nexmoe-post">
+  
+      <div class="nexmoe-post-cover" style="padding-bottom: 26.666666666666668%;"> 
+          <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/vue.jpg" data-sizes="auto" alt="vue-computed和watch的区别" class="lazyload">
+          <h1>vue-computed和watch的区别</h1>
+      </div>
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年03月02日</a>
+    <a><i class="nexmoefont icon-areachart"></i>470 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+</div>
+
+  <div class="nexmoe-post-right">
     
-    <div class="nexmoe-post">
-        <a href="/2021/03/02/JavaScript/js-%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;"> 
-                    <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/JavaScript.jpg" data-sizes="auto" alt="js-防抖和节流" class="lazyload">
-                    <h1>js-防抖和节流</h1>
-                </div>
-            
-        </a>
+  </div>
 
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2021年03月02日</a>
-            <a><i class="nexmoefont icon-areachart"></i>1.6k 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 6 分钟</a>
-        </div>
+  <article>
+    <p>computed和watch都是观察页面的数据变化的。</p>
+<a id="more"></a>
 
-        <article>
-            
-                <p>在进行窗口的resize、scroll，输入框内容校验等操作时，如果事件处理函数调用的频率无限制，会加重浏览器的负担，导致用户体验非常糟糕。此时我们可以采用debounce（防抖）和throttle（节流）的方式来减少调用频率，同时又不影响实际效果。</p>
-            
-        </article>
-    </div>
+<h4 id="计算属性computed"><a href="#计算属性computed" class="headerlink" title="计算属性computed :"></a><strong>计算属性computed :</strong></h4><ol>
+<li><p>支持缓存，只有依赖数据发生改变，才会重新进行计算</p>
+</li>
+<li><p>不支持异步，当computed内有异步操作时无效，无法监听数据的变化</p>
+</li>
+<li><p>computed 属性值会默认走缓存，计算属性是基于它们的响应式依赖进行缓存的，也就是基于data中声明过或者父组件传递的props中的数据通过计算得到的值</p>
+</li>
+<li><p>如果一个属性是由其他属性计算而来的，这个属性依赖其他属性，是一个多对一或者一对一，一般用computed</p>
+</li>
+<li><p>如果computed属性属性值是函数，那么默认会走get方法；函数的返回值就是属性的属性值；在computed中的，属性都有一个get和一个set方法，当数据变化时，调用set方法</p>
+</li>
+</ol>
+<h4 id="侦听属性watch："><a href="#侦听属性watch：" class="headerlink" title="侦听属性watch："></a><strong>侦听属性watch：</strong></h4><ol>
+<li><p>不支持缓存，数据变，直接会触发相应的操作；</p>
+</li>
+<li><p>watch支持异步；</p>
+</li>
+<li><p>监听的函数接收两个参数，第一个参数是最新的值；第二个参数是输入之前的值；</p>
+</li>
+<li><p>当一个属性发生变化时，需要执行对应的操作；一对多；</p>
+</li>
+<li><p>监听数据必须是data中声明过或者父组件传递过来的props中的数据，当数据变化时，触发其他操作，函数有两个参数，</p>
+</li>
+</ol>
+<p>　　immediate：组件加载立即触发回调函数执行，</p>
+<p>　　deep: 深度监听，为了发现<strong>对象内部值</strong>的变化，复杂类型的数据时使用，例如数组中的对象内容的改变，注意监听数组的变动不需要这么做。注意：deep无法监听到数组的变动和对象的新增，参考vue数组变异,只有以响应式的方式触发才会被监听到。</p>
+
+  </article>
+
+  
     
-    <div class="nexmoe-post">
-        <a href="/2021/02/24/JavaScript/js-prototype%E5%92%8C__proto__/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;"> 
-                    <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/JavaScript.jpg" data-sizes="auto" alt="js-prototype和__proto__" class="lazyload">
-                    <h1>js-prototype和__proto__</h1>
-                </div>
-            
-        </a>
-
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月24日</a>
-            <a><i class="nexmoefont icon-areachart"></i>702 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
-        </div>
-
-        <article>
-            
-                <p>prototype是函数才有的属性;__proto__是每个对象都有的属性</p>
-            
-        </article>
-    </div>
+  <div class="nexmoe-post-copyright">
+    <strong>本文作者：</strong>tangyuxian<br>
+    <strong>本文链接：</strong><a href="https://tangyuxian.github.io/2021/03/02/vue/vue-computed%E5%92%8Cwatch%E7%9A%84%E5%8C%BA%E5%88%AB/" title="https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;03&#x2F;02&#x2F;vue&#x2F;vue-computed%E5%92%8Cwatch%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;tangyuxian.github.io&#x2F;2021&#x2F;03&#x2F;02&#x2F;vue&#x2F;vue-computed%E5%92%8Cwatch%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;</a><br>
     
-    <div class="nexmoe-post">
-        <a href="/2021/02/24/JavaScript/js-this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/">
-            
-                <div class="nexmoe-post-cover mdui-ripple" style="padding-bottom: 26.666666666666668%;"> 
-                    <img data-src="https://cdn.jsdelivr.net/gh/tangyuxian/blog_image@latest/post/JavaScript.jpg" data-sizes="auto" alt="js-this指向问题" class="lazyload">
-                    <h1>js-this指向问题</h1>
-                </div>
-            
-        </a>
-
-        <div class="nexmoe-post-meta nexmoe-rainbow">
-            <a><i class="nexmoefont icon-calendar-fill"></i>2021年02月24日</a>
-            <a><i class="nexmoefont icon-areachart"></i>868 字</a>
-            <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
-        </div>
-
-        <article>
-            
-                <p>function(){} 和 () =&gt;{} 中this指向的问题</p>
-            
-        </article>
-    </div>
+      <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
     
+  </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/vue/" rel="tag">vue</a>
+    
+</div>
+
+  <div class="nexmoe-post-footer">
+    <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '651127b2c415eabb72ca',
+        clientSecret: '874f24a86c051a44699dc969870d76f1dac29318',
+        id: window.location.pathname,
+        repo: 'tangyuxian.github.io',
+        owner: 'tangyuxian',
+        admin: 'tangyuxian'
+    })
+    gitalk.render('gitalk')
+</script>
 </section>
-
+  </div>
+</div>
         <div class="nexmoe-post-right">
           
         </div>
@@ -257,7 +278,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/gh/xtaodada/xtaodada.github.io@0.0.2/copy.js"></script>
- <script src="/js/app.js?v=1614690555455"></script>
+ <script src="/js/app.js?v=1614690555373"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
 <script>
